@@ -1,6 +1,8 @@
 # SnapFlow
 
-![SnapFlow](snapflow.png)
+<p align="center">
+  <img src="snapflow.png" alt="SnapFlow">
+</p>
 
 SnapFlow aims to sync photos in real-time not only between devices but between users
 
