@@ -1,5 +1,7 @@
 # SnapFlow
 
+![SnapFlow](snapflow.png)
+
 SnapFlow aims to sync photos in real-time not only between devices but between users
 
 
@@ -58,45 +60,3 @@ The following sections describe the features of SnapFlow in detail.
 
 1. Aggregate different persons from the photos and ask the user to label them
 2. For any subsequent photo, if the identified targets are already labeled, SnapFlow will sync between users
-
-## Getting Started
-
-### Prerequisites
-- Python 3.7+
-- SQLite3
-
-### Installation
-1. Clone the repository:
-   ```
-   git clone https://github.com/GuilhermeViveiros/SnapFlow.git
-   cd SnapFlow
-   ```
-
-2. Install required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Run the application:
-   ```
-   python main.py
-   ```
-
-## Usage
-1. Launch the application
-2. Sign up or log in to your account
-3. Import your photo folder
-4. Label identified persons as prompted
-5. Start syncing and sharing your photos!
-
-## Contributing
-We welcome contributions to SnapFlow! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-- Thanks to all contributors who have helped shape SnapFlow
-- Inspired by the need for intelligent photo organization and seamless sharing across devices and users
-
-Note: For simplicity, we are using a local database to store photos and metadata. Future versions may incorporate cloud storage options.
