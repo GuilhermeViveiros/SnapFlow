@@ -1,0 +1,168 @@
+# Photo Aggregation Site Development Guide
+
+## Objective
+Enhance the existing project to create a web application that allows users to upload photos, automatically aggregates them by individual, and provides a user interface to view and manage these photos.
+
+## Current Project Structure
+- Root
+  - assets/ (contains the images)
+  - backend/ (contains the code for backend)
+  - mock/ (folder with mock images)
+  - snapflow/ (React project for frontend code)
+  - package.json
+  - plan.txt
+
+## Tech Stack
+- Frontend: React (in snapflow directory)
+- Backend: Python (in backend directory)
+
+## Features
+1. Photo upload functionality
+2. Photo display gallery
+3. Individual person galleries
+4. Integration with existing clustering and data manipulation functionality
+5. Use of mock photos for development and testing
+
+## Step-by-step Instructions
+
+### Backend (Python)
+
+1. Navigate to the `backend/` folder for all backend development.
+
+2. If not already set up, organize the backend structure:
+   ```
+   backend/
+   ├── app.py (or main.py)
+   ├── requirements.txt
+   ├── clustering/ (if exists)
+   ├── data/ (if exists)
+   ├── api/
+   │   ├── __init__.py
+   │   ├── routes.py
+   │   └── models.py
+   └── utils/
+       ├── __init__.py
+       └── image_processing.py
+   ```
+
+3. Implement or update API endpoints in `api/routes.py`:
+   - POST /upload: For receiving and storing uploaded photos
+   - GET /photos: To retrieve all uploaded photos
+   - GET /people: To retrieve all identified individuals
+   - GET /people/{id}/photos: To retrieve photos for a specific individual
+
+4. Set up a database (e.g., SQLite for simplicity or PostgreSQL for scalability) to store:
+   - Photo metadata (filename, path, upload date)
+   - Person data (id, name if provided)
+   - Associations between photos and people
+
+5. Implement or enhance the clustering functionality:
+   - Integrate it into the photo upload process
+   - Update the database with new individuals or associate photos with existing ones
+
+6. Create utility functions in `utils/image_processing.py`:
+   - Function to process images from the `assets/` folder
+   - Function to handle mock images from the `mock/` folder
+
+7. Implement a data seeding script:
+   - Create a function to load photos from `assets/` and `mock/`
+   - Process these photos through the clustering algorithm
+   - Populate the database with the results
+
+8. Implement error handling and logging throughout the backend
+
+9. Create a configuration file (`config.py`) to manage environment-specific settings
+
+### Frontend (React - in snapflow directory)
+
+use the photos from `mock`as the template for the site.
+`mock/mock1.png`for the person galleries
+`mock/mock2.png`for the all photos
+
+1. Navigate to the `snapflow/` directory for all frontend development.
+
+2. Update or create the main layout with two tabs:
+   - "Photos" tab
+   - "People" tab
+
+3. Implement the "Photos" tab:
+   - Create a drag-and-drop zone for photo uploads
+   - Implement a traditional file upload button as an alternative
+   - Display uploaded photos in a grid or gallery format
+   - Use photos from `assets/images` to populate the initial view
+
+4. Implement the "People" tab:
+   - Display a grid of identified individuals
+   - Create a click event on each individual that opens their personal gallery
+   - Use the clustering results from the processed photos to populate this view
+
+5. Develop a personal gallery component:
+   - Show all photos associated with a specific individual
+   - Include navigation to return to the main "People" view
+
+6. Implement API calls to the backend for all required functionality
+
+7. Create a development mode toggle:
+   - When enabled, use the seeded data from mock and asset photos
+   - When disabled, use actual uploaded photos
+
+8. Ensure the frontend can handle and display images from both `assets/` and user uploads
+
+### Integration and Testing
+
+1. Ensure proper CORS setup for frontend-backend communication
+
+2. Implement comprehensive error handling on both frontend and backend
+
+3. Create unit tests for critical components in both frontend and backend:
+   - Use mock photos and assets for consistent test data
+
+4. Perform integration testing to ensure smooth communication between frontend and backend:
+   - Test with both mock/asset photos and new uploads
+
+5. Conduct user acceptance testing to verify all features work as expected:
+   - Start with mock and asset photo data
+   - Progress to real user uploads
+
+### Deployment
+
+1. Choose appropriate hosting solutions for both frontend (snapflow) and backend
+
+2. Set up a CI/CD pipeline for automated testing and deployment
+
+3. Ensure proper security measures are in place, especially for handling user uploads
+
+4. Implement monitoring and logging for production environment
+
+5. Create a strategy for transitioning from mock/asset data to real user data in production
+
+### Future Enhancements
+
+1. Add user authentication and personal accounts
+2. Implement photo editing features
+3. Add sharing capabilities for photos and galleries
+4. Optimize for mobile devices
+5. Implement AI-powered tagging and categorization of photos beyond just facial recognition
+
+## Development Workflow
+
+1. Start by enhancing the backend:
+   - Organize the backend structure if needed
+   - Implement or update API endpoints
+   - Create utility functions for image processing
+   - Implement the data seeding script for mock and asset photos
+
+2. Develop the frontend in the snapflow directory:
+   - Update or create the main layout and components
+   - Implement the user interface for photo upload and display
+   - Connect to the backend API
+   - Implement the development mode toggle for using mock/asset data
+
+3. Iteratively test and refine both frontend and backend:
+   - Use mock photos and assets for initial testing and development
+   - Gradually introduce real photo uploads as development progresses
+
+4. Prepare for deployment once all features are implemented and tested:
+   - Plan the transition from mock/asset data to real user data
+
+Remember to leverage the existing code in the backend and snapflow directories. Ensure that the new components integrate smoothly with the existing codebase. The mock photos and assets should serve as a consistent dataset for development, testing, and initial user experience.
