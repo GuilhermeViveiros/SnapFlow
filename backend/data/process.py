@@ -15,10 +15,6 @@ import ffmpeg
 logger = logging.getLogger("snapflow")
 
 
-
-
-
-
 # Function to open and convert HEIC to numpy array
 def open_heic_image(heic_file_path) -> np.ndarray:
     heif_file = pyheif.read(heic_file_path)
@@ -79,8 +75,37 @@ def extract_face_embeddings_from_folder(folder: str, out_folder: str, draw: bool
             rimg = app.draw_on(_img, res)
             # save the image
             cv2.imwrite(os.path.join(out_folder, image) + '.jpg', rimg)
-    
 
+# extract the face given bbox
+def extract_face_from_image(file_path: str, bbox: List[int], save_path: str, margin: float = 0.2) -> np.ndarray:
+    # load the image
+    if os.path.exists(file_path):
+        img = cv2.imread(file_path)
+    else:
+        raise FileNotFoundError(f"The file {file_path} does not exist.")
+    
+    # extract the face with increased margin
+    x1, y1, x2, y2 = bbox.astype(int)
+    height, width = img.shape[:2]
+    
+    # Calculate margin in pixels
+    margin_x = int((x2 - x1) * margin)
+    margin_y = int((y2 - y1) * margin)
+    
+    # Adjust coordinates with margin, ensuring they stay within image bounds
+    x1 = max(0, x1 - margin_x)
+    y1 = max(0, y1 - margin_y)
+    x2 = min(width, x2 + margin_x)
+    y2 = min(height, y2 + margin_y)
+    
+    # extract the face
+    face = img[y1:y2, x1:x2]
+    
+    if save_path:
+        # save the face
+        cv2.imwrite(save_path, face)
+    
+    return face
     
 if __name__ == "__main__":
     # extract the face embeddings

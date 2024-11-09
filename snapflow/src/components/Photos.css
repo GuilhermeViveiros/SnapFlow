@@ -1,1 +1,38 @@
- 
+.photos-container {
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Custom styles for react-grid-gallery */
+.ReactGridGallery_tile {
+  cursor: pointer;
+}
+
+.ReactGridGallery_tile-viewport {
+  border-radius: 4px;
+  overflow: hidden;
+  border: none;
+}
+
+.ReactGridGallery_tile-viewport img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.ReactGridGallery_tile:hover .ReactGridGallery_tile-viewport img {
+  transform: scale(1.1);  /* Increased zoom effect */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ReactGridGallery_tile {
+    width: 33.33% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ReactGridGallery_tile {
+    width: 50% !important;
+  }
+}

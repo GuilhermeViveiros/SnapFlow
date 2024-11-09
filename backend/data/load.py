@@ -48,13 +48,17 @@ def parse_info(folder: str) -> Meta:
         if not file.endswith(".npy"):
             logging.info(f"Skipping {file} because it is not a numpy file")
             continue
-        meta = np.load(os.path.join(folder, file), allow_pickle=True)
+        try:
+            meta = np.load(os.path.join(folder, file), allow_pickle=True)
+        except EOFError:
+            print(f"Error: The file {file} is empty or corrupted.")
+            continue
         bboxs, embeddings = meta.item().get('bbox'), meta.item().get('embeddings')
         emb_path = os.path.join(folder, file)
         img_folder = folder.replace("embeddings", "images")
         img_name = file.split(".npy")[0]
         for emb, bbox in zip(embeddings, bboxs):
-            res.append(Metadata(emb, emb_path, img_name, os.path.join(img_folder, img_name), bbox))
+            res.append(ImageMetadata(emb, emb_path, img_name, os.path.join(img_folder, img_name), bbox))
     return Meta(res)
 
 if __name__ == "__main__":

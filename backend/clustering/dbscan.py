@@ -19,8 +19,9 @@ if __name__ == "__main__":
     from data.load import Meta, parse_info
     import cv2
     # parse embeddings
-    meta = parse_info("data/embeddings")
+    meta = parse_info("assets/embeddings")
     # cluster the embeddings
+    import pdb; pdb.set_trace()
     labels = dbscan(meta.get_embeddings())
     # get bboxs
     bboxs = meta.get_bbox()

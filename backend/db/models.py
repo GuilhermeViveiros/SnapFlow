@@ -3,16 +3,24 @@ from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 import pickle
 import base64
+from sqlalchemy import Table
 
 Base = declarative_base()
+
+# Define the association table
+person_photo = Table(
+    'person_photo', Base.metadata,
+    Column('person_id', Integer, ForeignKey('person.id')),
+    Column('photo_id', Integer, ForeignKey('photo.id'))
+)
 
 class Person(Base):
     __tablename__ = 'person'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=True)
-    filename = Column(String(255))  # New field for person's image
-    photos = relationship('Photo', back_populates='person')
-    embeddings = Column(PickleType, nullable=False, default=pickle.dumps([]))  # Use PickleType to store arrays, not nullable with empty list as default
+    file_path = Column(String(255), nullable=False)
+    photos = relationship('Photo', secondary=person_photo, back_populates='persons')
+    embeddings = Column(PickleType, nullable=False, default=pickle.dumps([]))
     cluster_id = Column(Integer, ForeignKey('cluster.id'))
 
     def to_dict(self):
@@ -21,8 +29,7 @@ class Person(Base):
             'name': self.name,
             'photo_count': len(self.photos),
             'cluster_id': self.cluster_id,
-            'filename': "/assets/images/" + self.filename,
-            #'embeddings': pickle.loads(self.embeddings)
+            'file_path': self.file_path,
         }
 
     @classmethod
@@ -43,19 +50,17 @@ class Photo(Base):
     id = Column(Integer, primary_key=True)
     filename = Column(String(255), nullable=False)
     file_path = Column(String(255), nullable=False)
-    # photo_data = Column(LargeBinary)
     upload_date = Column(DateTime, default=func.now())
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship('Person', back_populates='photos')
+    persons = relationship('Person', secondary=person_photo, back_populates='photos')
 
     def to_dict(self):
         return {
             'id': self.id,
             'filename': self.filename,
             'upload_date': self.upload_date.isoformat(),
-            'person_id': self.person_id,
-            'file_path': "/assets/images/" + self.filename
-            # self.file_path  # Include the file path
+            'person_count': len(self.persons),
+            'file_path': "/assets/images/" + self.filename,
+            'person_ids': [person.id for person in self.persons]  # Add this line
         }
 
     @classmethod
@@ -75,7 +80,7 @@ class Cluster(Base):
     __tablename__ = 'cluster'
     id = Column(Integer, primary_key=True)
     centroid = Column(JSON)  # Store centroid as JSON
-    persons = relationship('Person', backref='cluster')
+    person = relationship('Person', backref='cluster')
 
     def to_dict(self):
         return {
@@ -83,7 +88,7 @@ class Cluster(Base):
             'person_count': len(self.persons)
         }
 
-# delete all tables
+# Function to delete all tables
 def _drop_tables(engine):
     Base.metadata.drop_all(engine)
 
@@ -91,26 +96,22 @@ if __name__ == "__main__":
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
     from constants import DATABASE_URL
-    # Create an engine and add dummy data
+    
     engine = create_engine(DATABASE_URL)
-    # _drop_tables(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
     Base.metadata.create_all(engine)
-    # Add dummy data, Person, Photo, Cluster    
-    # Read image and convert to binary
-    with open("snapflow.png", "rb") as image_file:
-        image_binary = image_file.read()
     
-    photo = Photo(filename="snapflow.png", file_path="snapflow.png")
-    person = Person(name="John Doe", filename="john_gui.jpg", embeddings=pickle.dumps([0.1, 0.2, 0.3]))
+    # Add dummy data
+    photo1 = Photo(filename="snapflow.png", file_path="assets/images/snapflow.png")
+    person1 = Person(name="John Doe", filename="john.jpg", embeddings=pickle.dumps([0.1, 0.2, 0.3]))
     cluster = Cluster(centroid=[0.1, 0.2, 0.3])
-    session.add(photo)
-    session.add(person)
-    session.add(cluster)
-    # Add relationships
-    photo.person = person
-    person.cluster = cluster
-    # Commit and close
+    
+    session.add_all([photo1, person1, cluster])
+    
+    # Set up relationships
+    photo1.persons.append(person1)
+    person1.cluster = cluster
+    
     session.commit()
     session.close()

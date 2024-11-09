@@ -1,31 +1,32 @@
 .people-container {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .people-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
 }
 
 .person-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   cursor: pointer;
-}
-
-.person-name {
-  margin-bottom: 5px;
   text-align: center;
 }
 
+.person-name {
+  margin-top: 8px;
+}
+
 .circular-image {
-  width: 100px;
-  height: 100px;
+  width: 200px; /* New size */
+  height: 200px; /* New size */
   border-radius: 50%;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .circular-image img {
@@ -35,8 +36,13 @@
 }
 
 .person-details {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 100%;
+}
+
+.person-header {
+  margin-bottom: 16px;
+}
+
+.person-header button {
+  margin-left: 8px;
 }

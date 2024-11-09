@@ -9,9 +9,13 @@ class PhotoBase(BaseModel):
 class PhotoCreate(PhotoBase):
     pass
 
-class Photo(PhotoBase):
+class Photo(BaseModel):
     id: int
-    upload_date: datetime
+    filename: str
+    upload_date: str
+    person_count: int
+    file_path: str
+    person_ids: List[int]
 
     class Config:
         orm_mode = True
@@ -25,6 +29,7 @@ class PersonCreate(PersonBase):
 class Person(PersonBase):
     id: int
     photo_count: int
+    file_path: str
 
     class Config:
         orm_mode = True

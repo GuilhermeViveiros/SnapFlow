@@ -1,5 +1,7 @@
 import torch
-
+import numpy as np
+import os
+from data.load import ImageMetadata
 
 # select the device for computation
 if torch.cuda.is_available():
@@ -23,3 +25,15 @@ elif device.type == "mps":
         "give numerically different outputs and sometimes degraded performance on MPS. "
         "See e.g. https://github.com/pytorch/pytorch/issues/84936 for a discussion."
     )
+
+def extract_info_from_embedding_meta(embedding_file: str) -> ImageMetadata:
+    meta = np.load(embedding_file, allow_pickle=True)
+    return meta
+
+def get_metadata_path(filename: str) -> str:
+    # replace the extension with .npy if it exists
+    if not filename.endswith(".npy"):
+        filename = filename + ".npy"
+    if not os.path.exists(os.path.join("assets/embeddings", filename)):
+        raise FileNotFoundError(f"The file {filename} does not exist in the embeddings directory.")
+    return os.path.join("assets/embeddings", filename)

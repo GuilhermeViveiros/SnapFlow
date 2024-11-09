@@ -99,7 +99,7 @@ async def get_person_photos(id: int, db: Session = Depends(get_db)):
     person = db.query(models.Person).filter(models.Person.id == id).first()
     if person is None:
         raise HTTPException(status_code=404, detail="Person not found")
-    return person.photos
+    return [photo.to_dict() for photo in person.photos]
 
 if __name__ == "__main__":
     import uvicorn
